@@ -1,12 +1,13 @@
 import { Database } from './database.js'; // Importa a classe Database para manipulação de dados
 import { randomUUID } from 'node:crypto'; // Importa a função randomUUID do módulo crypto para gerar IDs únicos
+import { buildRoutePath } from '../utils/build-route-path.js'; // Importa a função para construir rotas com parâmetros dinâmicos
 
 const database = new Database(); // Instancia o banco de dados
 
 export const routes = [
 	{
 		method: 'GET',
-		path: '/users',
+		path: buildRoutePath('/users'),
 		handler: (request, response) => {
 			const users = database.select('users'); // Seleciona os usuários do banco de dados
 
@@ -15,7 +16,7 @@ export const routes = [
 	},
 	{
 		method: 'POST',
-		path: '/users',
+		path: buildRoutePath('/users'),
 		handler: (request, response) => {
 			const { name, email } = request.body;
 
@@ -28,6 +29,23 @@ export const routes = [
 			database.insert('users', user); // Insere o usuário no banco de dados
 
 			return response.writeHead(201).end(); // Resposta do servidor
+
+			// users.push({
+			// 	id: 1,
+			// 	name: 'Diego',
+			// 	email: 'diego@gmail.com'
+			// }); // Adiciona um usuário ao array
+		}
+	},
+	{
+		method: 'DELETE',
+		path: buildRoutePath('/users/:id'),
+		handler: (request, response) => {
+			const { id } = request.params; // Extrai o ID do usuário dos parâmetros da rota
+
+			database.delete('users', id); // Deleta o usuário do banco de dados
+
+			return response.writeHead(204).end(); // Resposta do servidor
 
 			// users.push({
 			// 	id: 1,

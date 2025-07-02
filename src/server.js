@@ -15,6 +15,10 @@ import { routes } from './middlewares/routes.js'; // Importa as rotas definidas 
 // PATCH - atualizar parcialmente um recurso no back-end
 // DELETE - deletar um recurso do back-end
 
+// Query Parameters (Parâmetros de consulta) => Informações adicionais na URL, geralmente após o símbolo de interrogação (?), como ?search=nome
+// Route Parameters (Parâmetros de rota) => Identificadores dinâmicos na URL
+// Request Body (Corpo da requisição) => Dados enviados na requisição, geralmente em formato JSON, como { "name": "Diego", "email": "diego@email.com.br"}
+
 // Cabeçalhos (headers) (Requisição/resposta) => Metadados - informações adicionais sobre a requisição ou resposta
 
 // HTTP Status Code
@@ -33,10 +37,14 @@ const server = http.createServer(async (request, response) => {
 	await json(request, response)
 
 	const route = routes.find(route => {
-		return route.method === method && route.path === url; // Verifica se o método e a URL da requisição correspondem a alguma rota definida
+		return route.method === method && route.path.test(url); // Verifica se o método e a URL da requisição correspondem a alguma rota definida
 	});
 
 	if (route ) {
+		const routeParams = request.url.match(route.path); // Extrai os parâmetros da rota usando a regex definida na rota
+
+		request.params = { ...routeParams.groups }; // Adiciona os parâmetros extraídos ao objeto request
+
 		return route.handler(request, response); // Se a rota for encontrada, chama o handler correspondente
 	}
 
