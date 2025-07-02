@@ -9,9 +9,14 @@ export const routes = [
 		method: 'GET',
 		path: buildRoutePath('/users'),
 		handler: (request, response) => {
-			console.log(request.query); // Exibe os parâmetros de consulta na console
+			const { search } = request.query; // Extrai o parâmetro de consulta 'search' da URL
+			// console.log(request.params); // Exibe os parâmetros da rota na console
+			// console.log(request.query); // Exibe os parâmetros de consulta na console
 
-			const users = database.select('users'); // Seleciona os usuários do banco de dados
+			const users = database.select('users',search ?{
+				name: search,
+				email: search,
+			} : null); // Seleciona os usuários do banco de dados
 
 			return response.end(JSON.stringify(users)); // Retorna a lista de usuários em formato JSON
 		}

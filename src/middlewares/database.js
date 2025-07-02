@@ -21,8 +21,16 @@ export class Database {
 		fs.writeFile(databaseFilePath, JSON.stringify(this.#database))
 	}
 
-	select(table){
-		const data = this.#database[table] ?? []
+	select(table, serach){
+		let data = this.#database[table] ?? []
+
+		if (serach) {
+			data = data.filter(row => {
+				return Object.entries(serach).some(([key, value]) => {
+					return row[key].toLowerCase().includes(value.toLowerCase());
+				});
+			});
+		}
 
 		return data
 	}
