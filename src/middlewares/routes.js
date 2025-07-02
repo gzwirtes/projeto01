@@ -53,5 +53,28 @@ export const routes = [
 			// 	email: 'diego@gmail.com'
 			// }); // Adiciona um usuário ao array
 		}
+	},
+	{
+		method: 'PUT',
+		path: buildRoutePath('/users/:id'),
+		handler: (request, response) => {
+			const { id } = request.params; // Extrai o ID do usuário dos parâmetros da rota
+			const { name, email } = request.body; // Extrai os dados do usuário do corpo da requisição
+
+			database.update('users', id,
+				{
+					name,
+					email,
+				}
+			); // Deleta o usuário do banco de dados
+
+			return response.writeHead(204).end(); // Resposta do servidor
+
+			// users.push({
+			// 	id: 1,
+			// 	name: 'Diego',
+			// 	email: 'diego@gmail.com'
+			// }); // Adiciona um usuário ao array
+		}
 	}
 ]
