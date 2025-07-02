@@ -2,6 +2,7 @@
 import http from 'node:http'; // ESModules | import/export atualmente se utiliza | node:http prefixo node: para importar módulos nativos do Node.js
 import { json } from './middlewares/json.js'; // Importa o middleware json para processar requisições JSON
 import { routes } from './middlewares/routes.js'; // Importa as rotas definidas no middleware routes
+import { extractQWueryParams } from './utils/extract-query-params.js';
 
 // Rotas para ..
 // criar usuários
@@ -43,7 +44,12 @@ const server = http.createServer(async (request, response) => {
 	if (route ) {
 		const routeParams = request.url.match(route.path); // Extrai os parâmetros da rota usando a regex definida na rota
 
-		request.params = { ...routeParams.groups }; // Adiciona os parâmetros extraídos ao objeto request
+		// console.log(extractQWueryParams(routeParams.groups.query)); // Extrai os parâmetros de consulta da URL
+
+		const { query, ...params } = routeParams.groups
+
+		request.params = params
+		request.query = query ? extractQWueryParams(query) : {}// Extrai os parâmetros de consulta da URL e os adiciona ao objeto request
 
 		return route.handler(request, response); // Se a rota for encontrada, chama o handler correspondente
 	}
